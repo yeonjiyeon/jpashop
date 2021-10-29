@@ -2,6 +2,7 @@ package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,17 +10,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
+//@RequiredArgsConstructor //final 변수만 생성자에 넣어서 생성자를 만들어 준다
 public class MemberService {
     
+
+    private final MemberRepository memberRepository;//값생성안하면 에러가 나기때문에 final로 해놓는게 좋다
+    
+
+//    public void setMemberRepository(MemberRepository memberRepository) {
+//        this.memberRepository = memberRepository;
+//    }
+
     @Autowired
-    private MemberRepository memberRepository;
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     /**
      *회원가입
      */
 
-
+    @Transactional//변경 , 다른메서들은 @Transactional(readOnly = true) 적용됨
     public Long join(Member member){
         validateDuplicateMember(member);//중복 회원검증
         memberRepository.save(member);
@@ -38,6 +50,7 @@ public class MemberService {
     public List<Member> findMembers(){
         return memberRepository.findAll();
     }
+
 
     public Member findOne(Long memberId){
         return memberRepository.findOne(memberId);
