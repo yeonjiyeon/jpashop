@@ -20,7 +20,7 @@ public class Member {
     private Address address;
 
     @OneToMany(mappedBy = "member")//읽기 전용으로 만든다
-    private List<Order> order = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
 
 }
